@@ -92,7 +92,7 @@ module.exports = function(grunt) {
         }
       }
 
-      var html = dom.window.document.children[0].outerHTML.replace(/<(\/?)(html|head|body)>/gm, '');
+      var html = dom.serialize();
 
       // Write the destination file.
       grunt.file.write(path.resolve(f.dest), html);
