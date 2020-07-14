@@ -86,7 +86,7 @@ module.exports = function(grunt) {
                   if(attname !== 'src' && attname !== 'srcset' && attname !== 'sizes' && attname !== 'alt'){
                     svg.setAttribute(atts[index].nodeName, atts[index].value);
                   }
-                  if(attname === 'alt' && attname !== ""){
+                  if(attname === 'alt' && atts[index].value !== "" && !svg.getAttribute('title')){
                     svg.setAttribute('title', atts[index].value);
                   }
                 }
