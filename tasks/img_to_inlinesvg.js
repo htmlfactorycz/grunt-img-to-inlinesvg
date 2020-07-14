@@ -87,6 +87,7 @@ module.exports = function(grunt) {
                     svg.setAttribute(atts[index].nodeName, atts[index].value);
                   }
                 }
+                svg.setAttribute('role', 'img');
 
                 //remove img element
                 image.remove();
