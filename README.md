@@ -17,6 +17,10 @@ Once the plugin has been installed, it may be enabled inside your Gruntfile with
 grunt.loadNpmTasks('grunt-img-to-inlinesvg');
 ```
 
+## Attention !!!
+
+Plugin only replace content and does not care about optimalization of svg icons. You have to optimize svg before to inline them. Use SVGO plugin.
+
 ## The "img_to_inlinesvg" task
 
 ### Overview
@@ -37,46 +41,29 @@ grunt.initConfig({
 
 ### Options
 
-#### options.separator
+#### options.svgFileLimit
+Type: `Number`
+Default value: `10`
+
+A number value that is used to limit svg file size. If file size will be bigger than this limit, image will be skipped and will not be inlined.
+
+#### options.assetsDir
 Type: `String`
-Default value: `',  '`
+Default value: ``
 
-A string value that is used to do something with whatever.
-
-#### options.punctuation
-Type: `String`
-Default value: `'.'`
-
-A string value that is used to do something else with whatever else.
+If you will use absolute path `/path/to/image.svg` you can specify directory to replace `/` to `options.assetsDir`.
 
 ### Usage Examples
-
-#### Default Options
-In this example, the default options are used to do something with whatever. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result would be `Testing, 1 2 3.`
-
-```js
-grunt.initConfig({
-  img_to_inlinesvg: {
-    options: {},
-    files: {
-      'dest/default_options': ['src/testing', 'src/123'],
-    },
-  },
-});
-```
-
-#### Custom Options
-In this example, custom options are used to do something else with whatever else. So if the `testing` file has the content `Testing` and the `123` file had the content `1 2 3`, the generated result in this case would be `Testing: 1 2 3 !!!`
 
 ```js
 grunt.initConfig({
   img_to_inlinesvg: {
     options: {
-      separator: ': ',
-      punctuation: ' !!!',
+      svgFileLimit: 10,
+      assetsDir: "",
     },
     files: {
-      'dest/default_options': ['src/testing', 'src/123'],
+      'dest/index.html': ['src/index.html'],
     },
   },
 });
