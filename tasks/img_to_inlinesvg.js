@@ -74,7 +74,7 @@ module.exports = function(grunt) {
               grunt.verbose.writeln(('<svg>: ').blue + filePath + (' (skipped: ' + fileSize.toFixed(2) + ' KB > ' + options.svgFileLimit + ' KB)').yellow);
             } else {
               image.insertAdjacentHTML('beforebegin', fileContent);
-              var svg = image.previousSibling;
+              var svg = image.previousElementSibling;
 
               //set attributes from img to svg
               var atts = image.attributes;
