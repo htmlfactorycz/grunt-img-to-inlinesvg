@@ -21,7 +21,7 @@ module.exports = function(grunt) {
   grunt.registerMultiTask('img_to_inlinesvg', 'description', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      svgFileLimit: undefined,
+      svgFileLimit: 10,
       assetsDir: "",
     });
 
