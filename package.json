@@ -1,7 +1,7 @@
 {
   "name": "grunt-img-to-inlinesvg",
   "description": "Replace svg images with inline svg during grunt build process",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "homepage": "https://github.com/htmlfactorycz/grunt-img-to-inlinesvg",
   "author": {
     "name": "Vitalij Petráš",
