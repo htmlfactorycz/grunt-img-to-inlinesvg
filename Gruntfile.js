@@ -30,11 +30,11 @@ module.exports = function(grunt) {
 
     // Configuration to be run (and then tested).
     img_to_inlinesvg: {
-      options: {
-        svgFileLimit: 20,
-        assetsDir: "",
-      },
       main: {
+        options: {
+          svgFileLimit: 10,
+          assetsDir: "",
+        },
         files: {
           'tmp/index.html': 'test/index.html',
         },
