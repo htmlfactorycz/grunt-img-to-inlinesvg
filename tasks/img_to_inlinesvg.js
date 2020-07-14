@@ -2,7 +2,7 @@
  * grunt-img-to-inlinesvg
  * https://github.com/htmlfactorycz/grunt-img-to-inlinesvg
  *
- * Copyright (c) 2020 Vitalij Petr83
+ * Copyright (c) 2020 Vitalij Petráš
  * Licensed under the MIT license.
  */
 
@@ -13,38 +13,102 @@ module.exports = function(grunt) {
   // Please see the Grunt documentation for more information regarding task
   // creation: http://gruntjs.com/creating-tasks
 
-  grunt.registerMultiTask('img_to_inlinesvg', 'Replace svg images with inline svg during grunt build process', function() {
+  var path = require('path');
+  var url = require('url');
+  var jsdom = require('jsdom');
+  var { JSDOM } = jsdom;
+
+  grunt.registerMultiTask('img_to_inlinesvg', 'description', function() {
     // Merge task-specific and/or target-specific options with these defaults.
     var options = this.options({
-      punctuation: '.',
-      separator: ', '
+      svgFileLimit: undefined,
+      assetsDir: "",
     });
+
+    var created = {
+      files: 0
+    };
+
+    var getAttributes = function(img, svg) {
+      for (var index in img.attr) {
+        var attr = img.attr[index];
+        grunt.log.writeln(attr);
+      }
+    };
 
     // Iterate over all specified file groups.
     this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
+      // Check that the source file exists
+      if (f.src.length === 0) {
+        // Print a success message.
+        grunt.log.warn('File "' + f.dest + '" does not exist.');
+        return;
+      }
 
-      // Handle options.
-      src += options.punctuation;
+      // init dom
+      var dom = new JSDOM(grunt.file.read(f.src));
+      var doc = dom.window.document;
+
+      grunt.verbose.writeln(('Reading: ').green + path.resolve(f.src.toString()));
+
+      var all_images = doc.querySelectorAll('img');
+      if (all_images.length) {
+        for (var i = 0; i < all_images.length; i++) {
+          var image = all_images[i];
+          var src = image.src;
+
+          if (!src) {
+
+          } else if (src.match(/^\/\//)) {
+
+          } else if (!src.match(/.svg$/i)) {
+
+          } else if (url.parse(src).protocol) {
+
+          } else {
+            var filePath = (src.substr(0, 1) === "/") ? path.resolve(options.assetsDir, src.substr(1)) : path.join(path.dirname(f.src.toString()), src);
+            var fileContent = grunt.file.read(filePath);
+            var fileSize = fileContent.length / 1024;
+
+            if (options.svgFileLimit && fileSize > options.svgFileLimit) {
+              grunt.verbose.writeln(('<svg>: ').blue + filePath + (' (skipped: ' + fileSize.toFixed(2) + ' KB > ' + options.svgFileLimit + ' KB)').yellow);
+            } else {
+              image.insertAdjacentHTML('beforebegin', fileContent);
+              var svg = image.previousSibling;
+
+              //set attributes from img to svg
+              var atts = image.attributes;
+              for (var index = 0; index < atts.length; index++) {
+                var attname = atts[index].nodeName;
+                if(attname !== 'src' && attname !== 'srcset' && attname !== 'sizes' && attname !== 'alt'){
+                  svg.setAttribute(atts[index].nodeName, atts[index].value);
+                }
+              }
+
+              //remove img element
+              image.remove();
+            }
+          }
+        }
+      }
+
+      var html = dom.window.document.children[0].outerHTML.replace(/<(\/?)(html|head|body)>/gm, '');
 
       // Write the destination file.
-      grunt.file.write(f.dest, src);
+      grunt.file.write(path.resolve(f.dest), html);
+      created.files++;
 
       // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+      grunt.verbose.writeln(('Created: ').green + path.resolve(f.dest) + '\n');
     });
+
+    if (created.files > 0) {
+      grunt.log.ok(
+        created.files + ' ' + grunt.util.pluralize(created.files, 'file/files') + ' created'
+      );
+    } else {
+      grunt.log.warn('No files created.');
+    }
   });
 
 };

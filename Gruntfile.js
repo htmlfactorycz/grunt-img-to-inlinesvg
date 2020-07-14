@@ -30,21 +30,14 @@ module.exports = function(grunt) {
 
     // Configuration to be run (and then tested).
     img_to_inlinesvg: {
-      default_options: {
-        options: {
-        },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
+      options: {
+        svgFileLimit: 20,
+        assetsDir: "",
       },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!'
-        },
+      main: {
         files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123']
-        }
+          'tmp/index.html': 'test/index.html',
+        },
       }
     },
 
