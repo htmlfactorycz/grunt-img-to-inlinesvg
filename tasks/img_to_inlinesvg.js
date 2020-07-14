@@ -67,26 +67,32 @@ module.exports = function(grunt) {
 
           } else {
             var filePath = (src.substr(0, 1) === "/") ? path.resolve(options.assetsDir, src.substr(1)) : path.join(path.dirname(f.src.toString()), src);
-            var fileContent = grunt.file.read(filePath);
-            var fileSize = fileContent.length / 1024;
+            var fileExists = grunt.file.exists(filePath);
 
-            if (options.svgFileLimit && fileSize > options.svgFileLimit) {
-              grunt.verbose.writeln(('<svg>: ').blue + filePath + (' (skipped: ' + fileSize.toFixed(2) + ' KB > ' + options.svgFileLimit + ' KB)').yellow);
-            } else {
-              image.insertAdjacentHTML('beforebegin', fileContent);
-              var svg = image.previousElementSibling;
+            if(fileExists){
+              var fileContent = grunt.file.read(filePath);
+              var fileSize = fileContent.length / 1024;
 
-              //set attributes from img to svg
-              var atts = image.attributes;
-              for (var index = 0; index < atts.length; index++) {
-                var attname = atts[index].nodeName;
-                if(attname !== 'src' && attname !== 'srcset' && attname !== 'sizes' && attname !== 'alt'){
-                  svg.setAttribute(atts[index].nodeName, atts[index].value);
+              if (options.svgFileLimit && fileSize > options.svgFileLimit) {
+                grunt.verbose.writeln(('<svg>: ').blue + filePath + (' (skipped: ' + fileSize.toFixed(2) + ' KB > ' + options.svgFileLimit + ' KB)').yellow);
+              } else {
+                image.insertAdjacentHTML('beforebegin', fileContent);
+                var svg = image.previousElementSibling;
+
+                //set attributes from img to svg
+                var atts = image.attributes;
+                for (var index = 0; index < atts.length; index++) {
+                  var attname = atts[index].nodeName;
+                  if(attname !== 'src' && attname !== 'srcset' && attname !== 'sizes' && attname !== 'alt'){
+                    svg.setAttribute(atts[index].nodeName, atts[index].value);
+                  }
                 }
-              }
 
-              //remove img element
-              image.remove();
+                //remove img element
+                image.remove();
+              }
+            }else{//fileExists = false
+              grunt.verbose.writeln(('<svg>: ').blue + filePath + 'not found');
             }
           }
         }
