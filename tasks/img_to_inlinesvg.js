@@ -15,8 +15,7 @@ module.exports = function(grunt) {
 
   var path = require('path');
   var url = require('url');
-  var jsdom = require('jsdom');
-  var { JSDOM } = jsdom;
+  var JSDOM = require('jsdom').JSDOM;
 
   grunt.registerMultiTask('img_to_inlinesvg', 'description', function() {
     // Merge task-specific and/or target-specific options with these defaults.
