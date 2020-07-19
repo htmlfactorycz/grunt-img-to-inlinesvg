@@ -29,13 +29,6 @@ module.exports = function(grunt) {
       files: 0
     };
 
-    var getAttributes = function(img, svg) {
-      for (var index in img.attr) {
-        var attr = img.attr[index];
-        grunt.log.writeln(attr);
-      }
-    };
-
     // Iterate over all specified file groups.
     this.files.forEach(function(f) {
       // Check that the source file exists
