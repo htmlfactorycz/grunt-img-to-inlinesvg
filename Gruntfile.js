@@ -34,6 +34,7 @@ module.exports = function(grunt) {
         options: {
           svgFileLimit: 10,
           assetsDir: "",
+          selector: "img[inline]"
         },
         files: {
           'tmp/index.html': 'test/index.html',

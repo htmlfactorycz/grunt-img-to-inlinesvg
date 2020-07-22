@@ -22,6 +22,7 @@ module.exports = function(grunt) {
     var options = this.options({
       svgFileLimit: 10,
       assetsDir: "",
+      selector: "img[inline]"
     });
 
     var created = {
@@ -43,8 +44,8 @@ module.exports = function(grunt) {
 
       grunt.verbose.writeln(('Reading: ').green + path.resolve(f.src.toString()));
 
-      var all_images = doc.querySelectorAll('img');
-      if (all_images.length) {
+      var all_images = doc.querySelectorAll(options.selector);
+      if (all_images) {
         for (var i = 0; i < all_images.length; i++) {
           var image = all_images[i];
           var src = image.src;
@@ -75,7 +76,7 @@ module.exports = function(grunt) {
                 var atts = image.attributes;
                 for (var index = 0; index < atts.length; index++) {
                   var attname = atts[index].nodeName;
-                  if(attname !== 'src' && attname !== 'srcset' && attname !== 'sizes' && attname !== 'alt'){
+                  if(attname !== 'src' && attname !== 'srcset' && attname !== 'sizes' && attname !== 'alt' && attname !== 'inline'){
                     svg.setAttribute(atts[index].nodeName, atts[index].value);
                   }
                   if(attname === 'alt' && atts[index].value !== "" && !svg.getAttribute('title')){
@@ -92,16 +93,16 @@ module.exports = function(grunt) {
             }
           }
         }
+
+        var html = dom.serialize();
+
+        // Write the destination file.
+        grunt.file.write(path.resolve(f.dest), html);
+        created.files++;
+
+        // Print a success message.
+        grunt.verbose.writeln(('Created: ').green + path.resolve(f.dest) + '\n');
       }
-
-      var html = dom.serialize();
-
-      // Write the destination file.
-      grunt.file.write(path.resolve(f.dest), html);
-      created.files++;
-
-      // Print a success message.
-      grunt.verbose.writeln(('Created: ').green + path.resolve(f.dest) + '\n');
     });
 
     if (created.files > 0) {

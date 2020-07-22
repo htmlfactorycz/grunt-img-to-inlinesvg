@@ -53,6 +53,12 @@ Default value: ``
 
 If you will use absolute path `/path/to/image.svg` you can specify directory to replace `/` to `options.assetsDir`.
 
+#### options.selector
+Type: `String`
+Default value: `img[inline]`
+
+CSS selector of images to process inline SVG insertion.
+
 ### Usage Examples
 
 ```js
@@ -61,6 +67,7 @@ grunt.initConfig({
     options: {
       svgFileLimit: 10,
       assetsDir: "",
+      selector: "img[inline]"
     },
     files: {
       'dest/index.html': ['src/index.html'],
